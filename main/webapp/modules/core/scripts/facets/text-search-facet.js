@@ -138,7 +138,7 @@ TextSearchFacet.prototype._initializeUI = function() {
     this._elmts.input[0].value = this._query;
   }
   
-  this._elmts.input.bind("keyup change input",function(evt) {
+  this._elmts.input.bind("change",function(evt) {
     // Ignore non-character keyup changes
     if(evt.type === "keyup" && (this.value === self._query || this.value === '' && !self._query)) {
       return;
