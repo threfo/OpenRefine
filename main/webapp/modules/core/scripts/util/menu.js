@@ -70,7 +70,9 @@ MenuSystem.dismissUntil = function(level) {
   for (var i = MenuSystem._layers.length - 1; i >= level; i--) {
     var layer = MenuSystem._layers[i];
 
-    $(document).unbind("keydown", layer.keyHandler);
+    if(layer.keyHandler){
+        $(document).unbind("keydown", layer.keyHandler);
+    }
 
     layer.elmt.remove();
     layer.elmt.unbind();

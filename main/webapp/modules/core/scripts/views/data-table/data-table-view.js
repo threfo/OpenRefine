@@ -19,9 +19,8 @@
                 var key = e.which;
                 if (cache[cache.length - 1] === key) return;
                 cache.push(key);
-
+                
                 i = (key === code[i] || ( typeof code === 'string' && key === keys[code.split("+")[i]] )) ? i + 1 : i;
-                console.log('keydown', code, cache, i)
                 if ( i === code.length || ( typeof code === 'string' && code.split('+').length === i ) ) {
                     fn(e, cache);
                 }
@@ -32,7 +31,6 @@
                 if (pi >= 0 && (lastKey === code[pi] || ( typeof code === 'string' && lastKey === keys[code.split("+")[pi]] )) ){
                     i = pi
                 }
-                console.log('keyup', code, cache, i)
             }
         });
     };
@@ -69,14 +67,6 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  */
-function _bindKeyEvents(self){
-    $.key('ctrl+n', function() {
-        self._onClickNextPage()
-    });
-    $.key('ctrl+b', function() {
-        self._onClickPreviousPage()
-    });
-}
 function DataTableView(div) {
   this._div = div;
   this._pageSize = 10;
@@ -85,12 +75,21 @@ function DataTableView(div) {
   this._sorting = { criteria: [] };
   this._columnHeaderUIs = [];
   this._shownulls = false;
-  _bindKeyEvents(this)
+  this._bindKeyEvents()
   this._showRows(0);
 }
 
 DataTableView._extenders = [];
 
+DataTableView.prototype._bindKeyEvents = function(){
+    var self = this
+    $.key('ctrl+n', function() {
+        self._onClickNextPage()
+    });
+    $.key('ctrl+b', function() {
+        self._onClickPreviousPage()
+    });
+}
 /*
   To extend, do something like this
 
