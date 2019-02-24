@@ -27,6 +27,7 @@
 package com.google.refine.tests.model.recon;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -152,6 +153,19 @@ public class StandardReconConfigTests extends RefineTest {
     	StandardReconConfig config = StandardReconConfig.reconstruct(json);
     	assertNull(config.typeID);
     	assertNull(config.typeName);
+    }
+    
+    @Test
+    public void testReconstructNoIdentifierSchemaSpaces() throws IOException {
+    	String json = "{\"mode\":\"standard-service\","
+    			+ "\"service\":\"https://tools.wmflabs.org/openrefine-wikidata/en/api\","
+    			+ "\"type\":null,"
+    			+ "\"autoMatch\":true,"
+    			+ "\"columnDetails\":[],"
+    			+ "\"limit\":0}";
+    	StandardReconConfig config = StandardReconConfig.reconstruct(json);
+    	assertEquals(config.identifierSpace, "http://localhost/identifier");
+    	assertEquals(config.schemaSpace, "http://localhost/schema");
     }
     
     @Test
@@ -319,5 +333,16 @@ public class StandardReconConfigTests extends RefineTest {
     	Recon recon = stub.createReconServiceResults("Kamila", node, 1234L);
     	assertEquals(recon.candidates.get(0).score, 0.3);
     	assertEquals(recon.candidates.get(0).id, "18951129");
+    }
+    
+    /**
+     * computing the features on an empty recon should not fail
+     */
+    @Test
+    public void testComputeFeatures() {
+    	StandardReconConfigStub stub = new StandardReconConfigStub();
+    	Recon recon = stub.createNewRecon(2384738L);
+    	stub.computeFeatures(recon, "my string");
+    	assertNotNull(recon.features);
     }
 }

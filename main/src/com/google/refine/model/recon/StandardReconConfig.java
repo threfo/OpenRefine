@@ -75,6 +75,9 @@ import com.google.refine.util.ParsingUtilities;
 public class StandardReconConfig extends ReconConfig {
     final static Logger logger = LoggerFactory.getLogger("refine-standard-recon");
     
+	private static final String DEFAULT_SCHEMA_SPACE = "http://localhost/schema";
+	private static final String DEFAULT_IDENTIFIER_SPACE = "http://localhost/identifier";
+    
     static public class ColumnDetail  {
         @JsonProperty("column")
         final public String columnName;
@@ -208,8 +211,8 @@ public class StandardReconConfig extends ReconConfig {
         int limit
     ) {
         this.service = service;
-        this.identifierSpace = identifierSpace;
-        this.schemaSpace = schemaSpace;
+        this.identifierSpace = identifierSpace != null ? identifierSpace : DEFAULT_IDENTIFIER_SPACE;
+        this.schemaSpace = schemaSpace != null ? schemaSpace : DEFAULT_SCHEMA_SPACE;
         
         this.typeID = typeID;
         this.typeName = typeName;
@@ -563,8 +566,8 @@ public class StandardReconConfig extends ReconConfig {
      * @param text
      * 	    the cell value to compare the reconciliation data to
      */
-	public void computeFeatures(Recon recon, String text) {
-        if (!recon.candidates.isEmpty()) {
+    public void computeFeatures(Recon recon, String text) {
+        if (recon.candidates != null && !recon.candidates.isEmpty()) {
             ReconCandidate candidate = recon.candidates.get(0);
             
             recon.setFeature(Recon.Feature_nameMatch, text.equalsIgnoreCase(candidate.name));
@@ -584,7 +587,7 @@ public class StandardReconConfig extends ReconConfig {
         } else {
         	recon.features = new Object[Recon.Feature_max];
         }
-	}
+    }
     
     static protected double wordDistance(String s1, String s2) {
         Set<String> words1 = breakWords(s1);
